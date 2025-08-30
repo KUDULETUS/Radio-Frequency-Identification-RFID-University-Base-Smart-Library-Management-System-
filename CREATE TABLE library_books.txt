@@ -1,0 +1,20 @@
+CREATE TABLE library_books (
+    book_uid VARCHAR(20) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    section INT CHECK (section IN (1, 2)) NOT NULL
+);
+
+write me esp32 code  i have 3 rfid reader to be controlled separately i2c lcd ithas 4 line and two servo motors.
+this  for   my library  borrowing and returning  process project system.
+the system will have  an  initiating state whre rfid reader 1  is  on  and lcd will display well come please scan library card.
+ when the card  is scaned  system checks if the  uid exists in the database (user_uid) if it does not exist lcd must display  you are not registered, please go register  for a 1 sec, then the  system will go back to its initiating state. if the uid exist , the sytem will then check ( borrowed_out)  if there is a NO the  user is  deemed to be borrowing,and if there is YES the user is deemed  to be  returning. 
+
+when  user is borrowing, the lcd must display please scan your the book rfid reader 1 goes( if the book is not scan in 4 sec system return to initiating state) when the book is scanned system must check if  book uid exist in the library_books table (book_uid), if the book uid  does not exist, the lcd must display  'this book is not from this library sorry' for 3 sec and system return to its   initiating state but if the book exist the system will take the book uid and its section, then insert the book uid in borrowed_book_uid, section of the book is inserted in borrowed_book_section, the borrowed_out is set to YES, borrow_date DATE is set to the current date, return_date DATE is set to 7 days  after borrow_date DATE,  the system will then check user cell number and system will sent a text message with Twilio for sending SMS messages ' hey user (name)  place  return book on (return_date DATE) , lcd will then display 'thank you for borrowing' for 2 sec and system will return to its initiating  state. 
+
+when  the user is deemed to be returning if there is a 1 there book being returned belong to section 1  and  2  for section 2, all the books belonging to section 1  will be scanned  at rfid reader 2 and  those for section 2 at rfid reader 3.
+the  system wil check borrowed_book_section if there is  a 1  the book  belong to section 1  the lcd must display 'scan you book at  section 1' the servo motor 1 opens and rfid reader 2 goes on ( if the book is not scan in 4 sec system return to initiating state ) if  the book is scanned the system will check if book uid matches that in  borrowed_book_uid if it does not match lcd will  display' please return the correct book'  in 3sec rfid reader goes off and servo motor closes, but if  it is  matching the system will first insert the current date in actual_return_date, the system must then check if the book is overdue by comparing actual_return_date which is the current date to return_date  the date of when the book was supost to be returned if it is over due add 100 to fine.
+the system will then set borrowed_out to NO, borrowed_book_uid to NULL,borrowed_book_section to NULL, borrow_date TO NULL,return_date NULL, actual_return_date to NULL. the system will then check user cell number and system will sent a text message with Twilio for sending SMS messages ' hey user (name) the book has been returned  with a fine of (fine) , lcd will then display 'thank you for returning' for 1sec rfid reader goes off and servo motor closes sec and system will return to its initiating  state. 
+
+
+   
+

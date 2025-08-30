@@ -1,0 +1,13 @@
+CREATE TABLE library_users (
+    user_uid VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    cell_number VARCHAR(20) NOT NULL,
+    borrowed_out BOOLEAN NOT NULL DEFAULT FALSE,
+    borrowed_book_uid VARCHAR(20) DEFAULT 'NONE',
+    borrowed_book_section INT DEFAULT 'NONE',
+    borrow_date DATE,
+    return_date DATE,
+    actual_return_date DATE,
+    fine DECIMAL(10, 2) DEFAULT 0.00,
+    FOREIGN KEY (borrowed_book_uid) REFERENCES library_books(book_uid)
+);
